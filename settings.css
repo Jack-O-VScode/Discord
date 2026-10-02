@@ -1,0 +1,26 @@
+/* =====================================================================
+   JUNGLE GLASS - SETTINGS
+   Paste this into Vencord's QuickCSS editor:
+     Discord > User Settings > Vencord > Edit QuickCSS
+   Change a value and Discord updates instantly as you type.
+   Tip: click the little colour square next to the accent to get a colour picker.
+   ===================================================================== */
+:root {
+    /* Accent colour (buttons, links, toggles, highlights) */
+    --jg-accent: #0fa3b8;
+
+    /* Font: "Nunito", "Inter", "Outfit", "Quicksand" or "gg sans" (Discord's default) */
+    --jg-font: "Nunito";
+
+    /* Glass panels: 0 = fully see-through, 1 = solid */
+    --jg-panel-opacity: 0.5;
+
+    /* Blur behind panels: 0px = none, 30px = very blurry */
+    --jg-blur: 12px;
+
+    /* Menus, popouts and dialogs: 0 = see-through, 1 = solid */
+    --jg-popup-opacity: 0.9;
+
+    /* Darken the background image: 0 = none, 1 = black */
+    --jg-bg-dim: 0.2;
+}

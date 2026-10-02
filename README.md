@@ -5,7 +5,8 @@ A personal Vencord theme for Discord on Windows:
 - Custom background image (embedded in the theme, 2560×1440)
 - Frosted glass panels (blurred, see-through)
 - Sea-blue accent colour
-- Nunito font
+- Choice of fonts (Nunito, Inter, Outfit, Quicksand, or Discord's default)
+- Settings you can change live from inside Discord
 
 ## First-time setup
 
@@ -16,35 +17,37 @@ A personal Vencord theme for Discord on Windows:
 
 From then on you open Discord as usual and the theme loads automatically.
 
-> If a big Discord update ever brings back the plain look, re-run the Vencord installer and click **Install** again. Your theme stays where it is.
+> If a Discord update ever brings back the plain look, re-run the Vencord installer and click **Install** again. Your theme and settings stay where they are.
+
+## Changing settings inside Discord
+
+1. In Discord, go to **User Settings → Vencord** and make sure **Enable Custom CSS** is on.
+2. Click **Edit QuickCSS**. A code editor window opens.
+3. Paste in everything from [`settings.css`](settings.css).
+4. Change any value. Discord updates instantly as you type.
+
+| Setting | What it does |
+|---|---|
+| `--jg-accent` | Accent colour. Click the little colour square next to it for a colour picker. Hover and link shades follow automatically. |
+| `--jg-font` | `"Nunito"`, `"Inter"`, `"Outfit"`, `"Quicksand"` or `"gg sans"` (Discord's default) |
+| `--jg-panel-opacity` | Glass panels: `0` = fully see-through, `1` = solid |
+| `--jg-blur` | Blur behind panels: `0px` = none, `30px` = very blurry |
+| `--jg-popup-opacity` | Menus, popouts and dialogs: `0` = see-through, `1` = solid |
+| `--jg-bg-dim` | Darkens the background image: `0` = none, `1` = black |
+
+Your QuickCSS is saved by Vencord, so it stays even when you reinstall or update the theme. To go back to the defaults, delete those lines from QuickCSS.
 
 ## Changing the background
 
 1. Replace `theme/background.jpg` with your new image. Keep the name `background`; `.jpg`, `.png`, `.webp` or `.gif` all work. Images around 2560×1440 look sharpest on a 1440p monitor.
 2. Double-click `install-theme.bat` again.
 
-## Tweaking the look
-
-Open `%APPDATA%\Vencord\themes\JungleGlass.theme.css` in Notepad (or click **Edit** next to the theme in Vencord's Themes tab). The **SETTINGS** block at the top has everything:
-
-| Setting | What it does |
-|---|---|
-| `--jg-accent` / `-hover` / `-light` | Accent colours (buttons, links, mentions) |
-| `--jg-blur` | Blur strength behind panels (`0px` turns it off) |
-| `--jg-panel-opacity` | Panel darkness: `0` = see-through, `1` = solid |
-| `--jg-popup-opacity` | Darkness of menus, popouts and dialogs |
-| `--jg-bg-dim` | Darkens the whole background image |
-| `--jg-font` | Font, which can be any [Google Font](https://fonts.google.com) (also update the `@import` line) |
-
-Save the file and Discord updates instantly.
-
-**Tip:** To keep your tweaks, edit `theme/JungleGlass.theme.css` in this folder instead and re-run `install-theme.bat`. Running the .bat copies this folder's version over the one in `%APPDATA%`.
-
 ## Files
 
 ```
-install-theme.bat          double-click to (re)install the theme
-scripts/install-theme.ps1  the script the .bat runs
+install-theme.bat            double-click to (re)install the theme
+settings.css                 paste into QuickCSS to change settings inside Discord
+scripts/install-theme.ps1    the script the .bat runs
 theme/JungleGlass.theme.css  the theme
-theme/background.jpg       your background image
+theme/background.jpg         your background image
 ```
