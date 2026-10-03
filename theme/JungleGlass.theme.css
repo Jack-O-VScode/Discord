@@ -2,7 +2,7 @@
  * @name Jungle Glass
  * @author jack-o-vscode
  * @description Personal theme: custom background image, frosted glass panels, sea-blue accent, custom font.
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 /* =====================================================================
@@ -20,7 +20,7 @@
     --jg-font: "Nunito";
 
     /* Frosted glass */
-    --jg-blur: 12px;              /* blur behind panels (0px = no blur) */
+    --jg-blur: 12px;              /* background blur (0px = sharp image) */
     --jg-panel-opacity: 0.5;      /* panel darkness: 0 = see-through, 1 = solid */
     --jg-popup-opacity: 0.9;      /* menus, popouts and dialogs */
     --jg-tint: 8 16 20;           /* panel colour as R G B (default: very dark blue-black) */
@@ -121,9 +121,23 @@ body {
 }
 
 #app-mount {
+    background: transparent !important;
+    position: relative;
+    z-index: 0;
+}
+
+/* The image is blurred once as its own layer, instead of re-blurring
+   behind every panel (backdrop-filter), which made typing laggy. */
+#app-mount::before {
+    content: "";
+    position: fixed;
+    inset: calc(var(--jg-blur) * -2);
+    z-index: -1;
+    pointer-events: none;
     background:
         linear-gradient(rgb(0 0 0 / var(--jg-bg-dim)), rgb(0 0 0 / var(--jg-bg-dim))),
-        var(--jg-image) var(--jg-bg-position) / cover no-repeat !important;
+        var(--jg-image) var(--jg-bg-position) / cover no-repeat;
+    filter: blur(var(--jg-blur));
 }
 
 /* ---- Frosted glass panels ---- */
@@ -134,18 +148,11 @@ body {
 /* Settings screens */
 [class^="standardSidebarView_"] {
     background: rgb(var(--jg-tint) / var(--jg-panel-opacity)) !important;
-    backdrop-filter: blur(var(--jg-blur));
 }
 
 /* Top title bar: lighter tint so the image still shows */
 [class^="bar_"] {
     background: rgb(var(--jg-tint) / calc(var(--jg-panel-opacity) * 0.5)) !important;
-}
-
-/* Menus, popouts and dialogs: frosted too */
-[role="menu"],
-[role="dialog"] {
-    backdrop-filter: blur(var(--jg-blur));
 }
 
 /* =====================================================================

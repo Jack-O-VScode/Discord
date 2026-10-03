@@ -15,7 +15,7 @@
     /* Glass panels: 0 = fully see-through, 1 = solid */
     --jg-panel-opacity: 0.5;
 
-    /* Blur behind panels: 0px = none, 30px = very blurry */
+    /* Background blur: 0px = sharp image, 30px = very blurry */
     --jg-blur: 12px;
 
     /* Menus, popouts and dialogs: 0 = see-through, 1 = solid */

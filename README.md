@@ -31,7 +31,7 @@ From then on you open Discord as usual and the theme loads automatically.
 | `--jg-accent` | Accent colour. Click the little colour square next to it for a colour picker. Hover and link shades follow automatically. |
 | `--jg-font` | `"Nunito"`, `"Inter"`, `"Outfit"`, `"Quicksand"` or `"gg sans"` (Discord's default) |
 | `--jg-panel-opacity` | Glass panels: `0` = fully see-through, `1` = solid |
-| `--jg-blur` | Blur behind panels: `0px` = none, `30px` = very blurry |
+| `--jg-blur` | Background blur: `0px` = sharp image, `30px` = very blurry |
 | `--jg-popup-opacity` | Menus, popouts and dialogs: `0` = see-through, `1` = solid |
 | `--jg-bg-dim` | Darkens the background image: `0` = none, `1` = black |
 
