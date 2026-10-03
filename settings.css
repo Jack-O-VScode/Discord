@@ -9,6 +9,9 @@
     /* Accent colour (buttons, links, toggles, highlights) */
     --jg-accent: #0fa3b8;
 
+    /* Ping colour (@mentions) - click the colour square for a picker */
+    --jg-mention: #f5c542;
+
     /* Font: "Nunito", "Inter", "Outfit", "Quicksand" or "gg sans" (Discord's default) */
     --jg-font: "Nunito";
 

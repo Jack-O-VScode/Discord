@@ -2,7 +2,7 @@
  * @name Jungle Glass
  * @author jack-o-vscode
  * @description Personal theme: custom background image, frosted glass panels, sea-blue accent, custom font.
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 /* =====================================================================
@@ -15,6 +15,9 @@
     /* Accent colour (buttons, links, toggles, highlights).
        Hover and light shades are worked out from it automatically. */
     --jg-accent: #0fa3b8;
+
+    /* Ping colour (@mentions, and the highlight on messages that ping you) */
+    --jg-mention: #f5c542;
 
     /* Font: "Nunito", "Inter", "Outfit", "Quicksand" or "gg sans" (Discord's default) */
     --jg-font: "Nunito";
@@ -78,9 +81,17 @@
     --redesign-button-primary-background: var(--jg-accent) !important;
     --redesign-button-primary-hover-background: var(--jg-accent-hover) !important;
     --redesign-button-primary-pressed-background: var(--jg-accent-hover) !important;
-    --mention-foreground: var(--jg-accent-light) !important;
-    --mention-background: color-mix(in srgb, var(--jg-accent) 30%, transparent) !important;
+    --mention-foreground: var(--jg-mention) !important;
+    --mention-background: color-mix(in srgb, var(--jg-mention) 22%, transparent) !important;
+    --background-mentioned: color-mix(in srgb, var(--jg-mention) 10%, transparent) !important;
+    --background-mentioned-hover: color-mix(in srgb, var(--jg-mention) 14%, transparent) !important;
     --focus-primary: var(--jg-accent) !important;
+}
+
+/* ---- Ping colour on hover (Discord uses the accent by default) ---- */
+.mention.interactive:hover {
+    background-color: var(--jg-mention) !important;
+    color: #1a1a1a !important;
 }
 
 /* ---- Make Discord's own backgrounds see-through ---- */
