@@ -35,6 +35,11 @@ From then on you open Discord as usual and the theme loads automatically.
 | `--jg-blur` | Blur behind panels: `0px` = none, `30px` = very blurry |
 | `--jg-popup-opacity` | Menus, popouts and dialogs: `0` = see-through, `1` = solid |
 | `--jg-bg-dim` | Darkens the background image: `0` = none, `1` = black |
+| `--jg-effect` | Animated effect: `none`, `snow`, `rain`, `leaves`, `stars` or `fireflies` (no quotes). `none` turns it off completely. |
+| `--jg-effect-speed` | Effect speed: `0.25` = slow, `3` = fast |
+| `--jg-effect-size` | Effect size: `0.5` = tiny, `2.5` = big |
+| `--jg-effect-opacity` | Effect opacity: `0.2` = faint, `1` = full |
+| `--jg-effect-layer` | `panels` = under the text, `front` = over everything (clicks still go through) |
 
 Your QuickCSS is saved by Vencord, so it stays even when you reinstall or update the theme. To go back to the defaults, delete those lines from QuickCSS.
 

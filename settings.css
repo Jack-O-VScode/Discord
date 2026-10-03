@@ -26,4 +26,20 @@
 
     /* Darken the background image: 0 = none, 1 = black */
     --jg-bg-dim: 0.2;
+
+    /* Animated effect: none, snow, rain, leaves, stars or fireflies (no quotes)
+       "none" turns it off completely, whatever the values below are. */
+    --jg-effect: none;
+
+    /* Effect speed: 0.25 = slow, 1 = normal, 3 = fast */
+    --jg-effect-speed: 1;
+
+    /* Effect size: 0.5 = tiny, 1 = normal, 2.5 = big */
+    --jg-effect-size: 1;
+
+    /* Effect opacity: 0.2 = faint, 1 = full */
+    --jg-effect-opacity: 0.8;
+
+    /* Where effects are drawn: panels = under the text, front = over everything */
+    --jg-effect-layer: panels;
 }

@@ -2,7 +2,7 @@
  * @name Jungle Glass
  * @author jack-o-vscode
  * @description Personal theme: custom background image, frosted glass panels, sea-blue accent, custom font.
- * @version 1.2.0
+ * @version 1.3.0
  */
 
 /* =====================================================================
@@ -31,6 +31,13 @@
     /* Background */
     --jg-bg-dim: 0.2;             /* darkens the whole image: 0 = none, 1 = black */
     --jg-bg-position: center;     /* which part of the image to keep when the window is resized */
+
+    /* Animated effect: none, snow, rain, leaves, stars or fireflies (no quotes) */
+    --jg-effect: none;
+    --jg-effect-speed: 1;         /* 0.25 = slow, 3 = fast */
+    --jg-effect-size: 1;          /* 0.5 = tiny, 2.5 = big */
+    --jg-effect-opacity: 0.8;     /* 0.2 = faint, 1 = full */
+    --jg-effect-layer: panels;    /* panels = under the text, front = over everything */
 }
 
 /* =====================================================================
@@ -157,6 +164,170 @@ body {
 [role="menu"],
 [role="dialog"] {
     backdrop-filter: blur(var(--jg-blur));
+}
+
+/* ---- Background effects (snow, rain, leaves, stars, fireflies) ----
+   "panels" (default): particles drift over the glass panels but under the text.
+   "front": particles float over everything (clicks still go through). */
+#app-mount {
+    --jg-fx-panel: var(--jg-fx-on, none);
+    --jg-fx-front: none;
+}
+
+@container style(--jg-effect-layer: front) {
+    #app-mount {
+        --jg-fx-panel: none;
+        --jg-fx-front: var(--jg-fx-on, none);
+    }
+}
+
+#app-mount::before,
+#app-mount::after,
+[class^="sidebar_"]::after,
+[class^="page_"]::after {
+    content: "";
+    position: fixed;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    background: var(--jg-fx-img) 0 0 / var(--jg-fx-tw) var(--jg-fx-th) repeat;
+    opacity: var(--jg-effect-opacity);
+    will-change: transform;
+    animation:
+        jg-fx-move calc(var(--jg-fx-dur) / var(--jg-effect-speed) * var(--jg-fx-k)) linear infinite var(--jg-fx-dir, normal),
+        var(--jg-fx-twinkle, jg-fx-none) 2.6s ease-in-out infinite alternate;
+    --jg-fx-tw: calc(var(--jg-fx-w) * var(--jg-effect-size) * var(--jg-fx-scale));
+    --jg-fx-th: calc(var(--jg-fx-h) * var(--jg-effect-size) * var(--jg-fx-scale));
+    --jg-fx-dx: calc(var(--jg-fx-tw) * var(--jg-fx-nx));
+    --jg-fx-dy: calc(var(--jg-fx-th) * var(--jg-fx-ny));
+}
+
+/* Front mode: two layers (far + near) over the whole window */
+#app-mount::before,
+#app-mount::after {
+    display: var(--jg-fx-front);
+    width: calc(100vw + var(--jg-fx-dx));
+    height: calc(100vh + var(--jg-fx-dy) + 1px);
+    z-index: 2147483000;
+}
+
+#app-mount::before {
+    --jg-fx-scale: 1;
+    --jg-fx-k: 1;
+}
+
+#app-mount::after {
+    --jg-fx-scale: 1.7;
+    --jg-fx-k: 0.85;
+    background-position: 37% 61%;
+    animation-delay: 0s, -1.3s;
+}
+
+/* Panels mode: one layer inside each glass panel, painted above the
+   panel's tint but below its content. (The panel's backdrop-filter
+   makes it the box these fixed layers are positioned in.) */
+[class^="sidebar_"]::after,
+[class^="page_"]::after {
+    display: var(--jg-fx-panel);
+    width: calc(100% + var(--jg-fx-dx));
+    height: calc(100% + var(--jg-fx-dy) + 1px);
+    z-index: -1;
+    --jg-fx-scale: 1.3;
+    --jg-fx-k: 0.9;
+}
+
+[class^="page_"]::after {
+    background-position: 53% 29%;
+    animation-delay: -7s, -0.8s;
+}
+
+@container not style(--jg-effect: none) {
+    [class^="sidebar_"],
+    [class^="page_"] {
+        overflow: clip;
+    }
+}
+
+@keyframes jg-fx-move {
+    from { transform: translate(calc(var(--jg-fx-dx) * -1), calc(var(--jg-fx-dy) * -1)); }
+    to   { transform: translate(0, 0); }
+}
+
+@keyframes jg-fx-twinkle {
+    from { opacity: calc(var(--jg-effect-opacity) * 0.35); }
+    to   { opacity: var(--jg-effect-opacity); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #app-mount::before,
+    #app-mount::after,
+    [class^="sidebar_"]::after,
+    [class^="page_"]::after {
+        animation: none;
+    }
+}
+
+@container style(--jg-effect: snow) {
+    #app-mount {
+        --jg-fx-on: block;
+        --jg-fx-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Ccircle cx='79.8' cy='40.4' r='2.2' fill='white' fill-opacity='0.53'/%3E%3Ccircle cx='154.4' cy='22.5' r='1.1' fill='white' fill-opacity='0.59'/%3E%3Ccircle cx='128.2' cy='89.4' r='2.5' fill='white' fill-opacity='0.69'/%3E%3Ccircle cx='19.2' cy='121.7' r='1.7' fill='white' fill-opacity='0.76'/%3E%3Ccircle cx='14.5' cy='104.9' r='2.0' fill='white' fill-opacity='0.63'/%3E%3Ccircle cx='21.9' cy='26.7' r='2.7' fill='white' fill-opacity='0.81'/%3E%3Ccircle cx='102.8' cy='194.5' r='1.5' fill='white' fill-opacity='0.76'/%3E%3Ccircle cx='34.2' cy='56.9' r='2.2' fill='white' fill-opacity='0.89'/%3E%3Ccircle cx='149.1' cy='222.1' r='2.6' fill='white' fill-opacity='0.63'/%3E%3Ccircle cx='137.6' cy='96.4' r='3.2' fill='white' fill-opacity='0.55'/%3E%3Ccircle cx='228.6' cy='16.6' r='1.9' fill='white' fill-opacity='0.84'/%3E%3Ccircle cx='201.7' cy='72.0' r='1.3' fill='white' fill-opacity='0.72'/%3E%3Ccircle cx='38.9' cy='32.9' r='1.1' fill='white' fill-opacity='0.80'/%3E%3Ccircle cx='76.3' cy='192.1' r='2.7' fill='white' fill-opacity='0.76'/%3E%3Ccircle cx='47.2' cy='138.6' r='2.9' fill='white' fill-opacity='0.64'/%3E%3Ccircle cx='151.7' cy='90.9' r='2.5' fill='white' fill-opacity='0.77'/%3E%3C/svg%3E");
+        --jg-fx-w: 240px;
+        --jg-fx-h: 240px;
+        --jg-fx-nx: 1;
+        --jg-fx-ny: 4;
+        --jg-fx-dur: 26s;
+    }
+}
+
+@container style(--jg-effect: rain) {
+    #app-mount {
+        --jg-fx-on: block;
+        --jg-fx-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cline x1='111.2' y1='93.9' x2='117.8' y2='113.8' stroke='rgb(205,225,255)' stroke-opacity='0.45' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='147.6' y1='162.3' x2='157.3' y2='191.5' stroke='rgb(205,225,255)' stroke-opacity='0.49' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='96.4' y1='123.0' x2='103.8' y2='145.2' stroke='rgb(205,225,255)' stroke-opacity='0.47' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='38.5' y1='128.2' x2='46.8' y2='153.0' stroke='rgb(205,225,255)' stroke-opacity='0.27' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='120.6' y1='169.0' x2='130.1' y2='197.4' stroke='rgb(205,225,255)' stroke-opacity='0.52' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='145.1' y1='69.8' x2='154.4' y2='97.8' stroke='rgb(205,225,255)' stroke-opacity='0.53' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='84.0' y1='123.6' x2='90.8' y2='143.9' stroke='rgb(205,225,255)' stroke-opacity='0.39' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='33.2' y1='94.6' x2='38.4' y2='110.3' stroke='rgb(205,225,255)' stroke-opacity='0.47' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='53.5' y1='46.4' x2='58.5' y2='61.4' stroke='rgb(205,225,255)' stroke-opacity='0.27' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='38.3' y1='137.6' x2='44.0' y2='154.9' stroke='rgb(205,225,255)' stroke-opacity='0.31' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='48.1' y1='64.7' x2='54.6' y2='84.1' stroke='rgb(205,225,255)' stroke-opacity='0.27' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='84.7' y1='152.0' x2='89.4' y2='166.0' stroke='rgb(205,225,255)' stroke-opacity='0.30' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='41.3' y1='92.9' x2='46.5' y2='108.5' stroke='rgb(205,225,255)' stroke-opacity='0.38' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='106.9' y1='153.7' x2='111.7' y2='168.1' stroke='rgb(205,225,255)' stroke-opacity='0.56' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='144.7' y1='151.0' x2='152.6' y2='174.8' stroke='rgb(205,225,255)' stroke-opacity='0.30' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='69.0' y1='88.1' x2='75.0' y2='106.2' stroke='rgb(205,225,255)' stroke-opacity='0.37' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='80.2' y1='153.8' x2='86.8' y2='173.6' stroke='rgb(205,225,255)' stroke-opacity='0.29' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='164.1' y1='51.1' x2='173.3' y2='78.7' stroke='rgb(205,225,255)' stroke-opacity='0.60' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='54.7' y1='62.5' x2='61.8' y2='83.9' stroke='rgb(205,225,255)' stroke-opacity='0.42' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='62.7' y1='97.9' x2='67.8' y2='113.3' stroke='rgb(205,225,255)' stroke-opacity='0.29' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='112.5' y1='66.8' x2='119.0' y2='86.3' stroke='rgb(205,225,255)' stroke-opacity='0.34' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='30.6' y1='88.7' x2='39.7' y2='115.9' stroke='rgb(205,225,255)' stroke-opacity='0.31' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E");
+        --jg-fx-w: 200px;
+        --jg-fx-h: 200px;
+        --jg-fx-nx: 1;
+        --jg-fx-ny: 3;
+        --jg-fx-dur: 2.4s;
+    }
+}
+
+@container style(--jg-effect: leaves) {
+    #app-mount {
+        --jg-fx-on: block;
+        --jg-fx-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cg transform='translate(24.6 288.1) rotate(355) scale(1.19)' fill-opacity='.9'%3E%3Cpath d='M0 -9 C6 -5 6 5 0 9 C-6 5 -6 -5 0 -9Z' fill='%235e8c4a'/%3E%3Cpath d='M0 -8 L0 8' stroke='rgba(0,0,0,.25)' stroke-width='.8'/%3E%3C/g%3E%3Cg transform='translate(168.0 59.6) rotate(295) scale(1.18)' fill-opacity='.9'%3E%3Cpath d='M0 -9 C6 -5 6 5 0 9 C-6 5 -6 -5 0 -9Z' fill='%235e8c4a'/%3E%3Cpath d='M0 -8 L0 8' stroke='rgba(0,0,0,.25)' stroke-width='.8'/%3E%3C/g%3E%3Cg transform='translate(172.3 25.7) rotate(177) scale(0.82)' fill-opacity='.9'%3E%3Cpath d='M0 -9 C6 -5 6 5 0 9 C-6 5 -6 -5 0 -9Z' fill='%237aa65a'/%3E%3Cpath d='M0 -8 L0 8' stroke='rgba(0,0,0,.25)' stroke-width='.8'/%3E%3C/g%3E%3Cg transform='translate(168.0 295.9) rotate(284) scale(1.29)' fill-opacity='.9'%3E%3Cpath d='M0 -9 C6 -5 6 5 0 9 C-6 5 -6 -5 0 -9Z' fill='%23d9822b'/%3E%3Cpath d='M0 -8 L0 8' stroke='rgba(0,0,0,.25)' stroke-width='.8'/%3E%3C/g%3E%3Cg transform='translate(263.2 215.7) rotate(249) scale(0.86)' fill-opacity='.9'%3E%3Cpath d='M0 -9 C6 -5 6 5 0 9 C-6 5 -6 -5 0 -9Z' fill='%23c9a24a'/%3E%3Cpath d='M0 -8 L0 8' stroke='rgba(0,0,0,.25)' stroke-width='.8'/%3E%3C/g%3E%3Cg transform='translate(92.2 122.1) rotate(337) scale(0.97)' fill-opacity='.9'%3E%3Cpath d='M0 -9 C6 -5 6 5 0 9 C-6 5 -6 -5 0 -9Z' fill='%23c9a24a'/%3E%3Cpath d='M0 -8 L0 8' stroke='rgba(0,0,0,.25)' stroke-width='.8'/%3E%3C/g%3E%3Cg transform='translate(65.4 237.2) rotate(131) scale(1.27)' fill-opacity='.9'%3E%3Cpath d='M0 -9 C6 -5 6 5 0 9 C-6 5 -6 -5 0 -9Z' fill='%235e8c4a'/%3E%3Cpath d='M0 -8 L0 8' stroke='rgba(0,0,0,.25)' stroke-width='.8'/%3E%3C/g%3E%3Cg transform='translate(169.3 239.3) rotate(169) scale(0.76)' fill-opacity='.9'%3E%3Cpath d='M0 -9 C6 -5 6 5 0 9 C-6 5 -6 -5 0 -9Z' fill='%23c9a24a'/%3E%3Cpath d='M0 -8 L0 8' stroke='rgba(0,0,0,.25)' stroke-width='.8'/%3E%3C/g%3E%3Cg transform='translate(111.6 81.3) rotate(225) scale(0.82)' fill-opacity='.9'%3E%3Cpath d='M0 -9 C6 -5 6 5 0 9 C-6 5 -6 -5 0 -9Z' fill='%239bb85a'/%3E%3Cpath d='M0 -8 L0 8' stroke='rgba(0,0,0,.25)' stroke-width='.8'/%3E%3C/g%3E%3C/svg%3E");
+        --jg-fx-w: 320px;
+        --jg-fx-h: 320px;
+        --jg-fx-nx: 1;
+        --jg-fx-ny: 2;
+        --jg-fx-dur: 30s;
+    }
+}
+
+@container style(--jg-effect: stars) {
+    #app-mount {
+        --jg-fx-on: block;
+        --jg-fx-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Ccircle cx='246.7' cy='144.2' r='0.9' fill='white' fill-opacity='0.94'/%3E%3Ccircle cx='193.4' cy='235.1' r='1.2' fill='white' fill-opacity='0.61'/%3E%3Ccircle cx='32.1' cy='195.6' r='0.7' fill='white' fill-opacity='0.65'/%3E%3Ccircle cx='266.4' cy='230.2' r='0.7' fill='white' fill-opacity='0.79'/%3E%3Ccircle cx='221.0' cy='143.8' r='0.7' fill='white' fill-opacity='0.71'/%3E%3Ccircle cx='58.7' cy='232.1' r='0.6' fill='white' fill-opacity='0.96'/%3E%3Ccircle cx='102.4' cy='235.4' r='0.8' fill='white' fill-opacity='0.73'/%3E%3Ccircle cx='284.0' cy='120.4' r='1.0' fill='white' fill-opacity='0.95'/%3E%3Ccircle cx='122.0' cy='276.9' r='0.9' fill='white' fill-opacity='0.96'/%3E%3Ccircle cx='213.8' cy='56.3' r='1.0' fill='white' fill-opacity='0.77'/%3E%3Ccircle cx='44.1' cy='50.9' r='1.0' fill='white' fill-opacity='0.51'/%3E%3Ccircle cx='265.0' cy='237.0' r='0.9' fill='white' fill-opacity='0.59'/%3E%3Ccircle cx='49.5' cy='242.7' r='0.5' fill='white' fill-opacity='0.90'/%3E%3Ccircle cx='286.4' cy='194.7' r='0.7' fill='white' fill-opacity='0.74'/%3E%3Ccircle cx='107.5' cy='163.8' r='1.2' fill='white' fill-opacity='0.78'/%3E%3Ccircle cx='45.2' cy='12.0' r='0.8' fill='white' fill-opacity='0.76'/%3E%3Ccircle cx='283.7' cy='192.5' r='1.0' fill='white' fill-opacity='0.89'/%3E%3Ccircle cx='157.5' cy='273.1' r='0.6' fill='white' fill-opacity='0.78'/%3E%3Cpath d='M80.6 83.9 Q80.6 88.4 85.1 88.4 Q80.6 88.4 80.6 93.0 Q80.6 88.4 76.1 88.4 Q80.6 88.4 80.6 83.9Z' fill='white'/%3E%3Cpath d='M225.1 147.9 Q225.1 152.1 229.4 152.1 Q225.1 152.1 225.1 156.4 Q225.1 152.1 220.9 152.1 Q225.1 152.1 225.1 147.9Z' fill='white'/%3E%3Cpath d='M167.0 217.5 Q167.0 221.8 171.3 221.8 Q167.0 221.8 167.0 226.0 Q167.0 221.8 162.8 221.8 Q167.0 221.8 167.0 217.5Z' fill='white'/%3E%3Cpath d='M263.8 129.6 Q263.8 134.3 268.6 134.3 Q263.8 134.3 263.8 139.1 Q263.8 134.3 259.1 134.3 Q263.8 134.3 263.8 129.6Z' fill='white'/%3E%3C/svg%3E");
+        --jg-fx-w: 300px;
+        --jg-fx-h: 300px;
+        --jg-fx-nx: 1;
+        --jg-fx-ny: 0;
+        --jg-fx-dur: 120s;
+        --jg-fx-twinkle: jg-fx-twinkle;
+    }
+}
+
+@container style(--jg-effect: fireflies) {
+    #app-mount {
+        --jg-fx-on: block;
+        --jg-fx-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280' viewBox='0 0 280 280'%3E%3Cdefs%3E%3CradialGradient id='g'%3E%3Cstop offset='0' stop-color='%23f4ffb0'/%3E%3Cstop offset='.35' stop-color='%23d8f56a' stop-opacity='.8'/%3E%3Cstop offset='1' stop-color='%23b8e04a' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='127.6' cy='148.7' r='3.2' fill='url(%23g)'/%3E%3Ccircle cx='134.3' cy='254.8' r='5.0' fill='url(%23g)'/%3E%3Ccircle cx='191.8' cy='237.9' r='5.4' fill='url(%23g)'/%3E%3Ccircle cx='255.0' cy='77.5' r='5.7' fill='url(%23g)'/%3E%3Ccircle cx='155.5' cy='255.2' r='3.5' fill='url(%23g)'/%3E%3Ccircle cx='228.4' cy='45.7' r='5.1' fill='url(%23g)'/%3E%3Ccircle cx='41.6' cy='125.0' r='5.0' fill='url(%23g)'/%3E%3Ccircle cx='28.9' cy='72.6' r='3.4' fill='url(%23g)'/%3E%3C/svg%3E");
+        --jg-fx-w: 280px;
+        --jg-fx-h: 280px;
+        --jg-fx-nx: 1;
+        --jg-fx-ny: 1;
+        --jg-fx-dur: 40s;
+        --jg-fx-twinkle: jg-fx-twinkle;
+        --jg-fx-dir: reverse;
+    }
 }
 
 /* =====================================================================
