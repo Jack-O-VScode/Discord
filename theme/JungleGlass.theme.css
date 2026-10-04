@@ -160,9 +160,9 @@ body {
     background: rgb(var(--jg-tint) / calc(var(--jg-panel-opacity) * 0.5)) !important;
 }
 
-/* Menus, popouts and dialogs: frosted too */
-[role="menu"],
-[role="dialog"] {
+/* Right-click menus: frosted too. (Not dialogs: a blur there breaks the
+   layout of full-screen ones like the image viewer.) */
+[role="menu"] {
     backdrop-filter: blur(var(--jg-blur));
 }
 
