@@ -546,18 +546,36 @@
                 if (!host.contains(e) || e.dataset.jgCleared) continue;
                 const er = e.getBoundingClientRect();
                 if (er.width < r.width * 0.6 || er.height < r.height * 0.6) continue;
-                const cs = getComputedStyle(e);
-                const solid = cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "transparent";
-                if (!solid && cs.backgroundImage === "none") continue;
-                e.dataset.jgCleared = "1";
-                e.style.setProperty("background-color", "transparent", "important");
-                e.style.setProperty("background-image", "none", "important");
+                clearBg(e);
             }
         }
     }
 
+    function clearBg(e) {
+        if (e.dataset.jgCleared) return;
+        const cs = getComputedStyle(e);
+        const solid = cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "transparent";
+        if (!solid && cs.backgroundImage === "none") return;
+        e.dataset.jgCleared = "1";
+        e.style.setProperty("background-color", "transparent", "important");
+        e.style.setProperty("background-image", "none", "important");
+    }
+
+    // Layout wrappers between the wallpaper (.Root__top-container) and each
+    // panel also use Spotify's solid main colour; make those see-through too.
+    function clearWrappers(host) {
+        for (let e = host.parentElement; e && e !== document.body; e = e.parentElement) {
+            if (e.classList.contains("Root__top-container")) break;
+            clearBg(e);
+        }
+    }
+
     function keepGlass() {
-        for (const host of findPanels()) clearCovers(host);
+        for (const host of findPanels()) {
+            clearWrappers(host);
+            clearCovers(host);
+        }
+        for (const el of document.querySelectorAll(".Root__now-playing-bar, .Root__globalNav")) clearWrappers(el);
     }
 
     const engine = new EffectsEngine(settings);
