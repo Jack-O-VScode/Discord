@@ -222,6 +222,39 @@
                 host.appendChild(canvas);
                 this.canvases.set(host, canvas);
             }
+
+            for (const host of hosts) this.clearCovers(host);
+        }
+
+        // Spotify sometimes paints a solid background on a big layer inside a
+        // panel, which hides the effect (and the glass). Find large layers
+        // with a background that cover the panel and make them see-through.
+        clearCovers(host) {
+            const r = host.getBoundingClientRect();
+            const points = [[0.5, 0.5], [0.5, 0.2], [0.5, 0.8], [0.25, 0.5], [0.75, 0.5]];
+            for (const [fx, fy] of points) {
+                for (const e of document.elementsFromPoint(r.left + r.width * fx, r.top + r.height * fy)) {
+                    if (e === host) break;
+                    if (!host.contains(e) || e.dataset.jgCleared) continue;
+                    const er = e.getBoundingClientRect();
+                    if (er.width < r.width * 0.6 || er.height < r.height * 0.6) continue;
+                    const cs = getComputedStyle(e);
+                    const solid = cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "transparent";
+                    if (!solid && cs.backgroundImage === "none") continue;
+                    e.dataset.jgCleared = "1";
+                    const saved = ["background-color", "background-image"].map(prop =>
+                        [prop, e.style.getPropertyValue(prop), e.style.getPropertyPriority(prop)]);
+                    e.style.setProperty("background-color", "transparent", "important");
+                    e.style.setProperty("background-image", "none", "important");
+                    this.restored.push(() => {
+                        for (const [prop, value, priority] of saved) {
+                            if (value) e.style.setProperty(prop, value, priority);
+                            else e.style.removeProperty(prop);
+                        }
+                        delete e.dataset.jgCleared;
+                    });
+                }
+            }
         }
 
         count() {
