@@ -64,14 +64,23 @@ textarea,
     background-color: var(--jg-accent) !important;
 }
 
-/* ---- Make Spotify's own backgrounds see-through ---- */
+/* ---- Make Spotify's own backgrounds see-through ----
+   Note: Spotify's "main" colour stays solid on purpose. It is also used for
+   the icon on the white play button and the text on light buttons, so making
+   it transparent made those disappear. The big background layers are made
+   see-through below (and by the extension, which finds any it missed). */
+.main-view-container,
+.main-view-container__scroll-node,
+.main-view-container__scroll-node-child,
+.main-yourLibraryX-library,
+.main-yourLibraryX-libraryRootlist,
+.main-nowPlayingBar-container {
+    background: transparent !important;
+}
+
 :root,
 .encore-dark-theme,
 .encore-dark-theme .encore-base-set {
-    --spice-main: transparent !important;
-    --spice-sidebar: transparent !important;
-    --spice-player: transparent !important;
-    --background-base: transparent !important;
     --background-tinted-base: rgb(255 255 255 / 0.06) !important;
     --background-elevated-base: rgb(var(--jg-tint) / var(--jg-popup-opacity)) !important;
     --background-elevated-highlight: rgb(40 56 62 / var(--jg-popup-opacity)) !important;

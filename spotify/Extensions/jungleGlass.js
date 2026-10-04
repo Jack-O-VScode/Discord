@@ -188,11 +188,7 @@
                 return;
             }
 
-            const found = Array.from(document.querySelectorAll(PANEL_SELECTOR)).filter(el => {
-                const r = el.getBoundingClientRect();
-                return r.width > 120 && r.height > 120;
-            });
-            const hosts = found.filter(el => !found.some(o => o !== el && o.contains(el)));
+            const hosts = findPanels();
 
             for (const [host, canvas] of this.canvases) {
                 if (!host.isConnected || !hosts.includes(host)) {
@@ -223,38 +219,6 @@
                 this.canvases.set(host, canvas);
             }
 
-            for (const host of hosts) this.clearCovers(host);
-        }
-
-        // Spotify sometimes paints a solid background on a big layer inside a
-        // panel, which hides the effect (and the glass). Find large layers
-        // with a background that cover the panel and make them see-through.
-        clearCovers(host) {
-            const r = host.getBoundingClientRect();
-            const points = [[0.5, 0.5], [0.5, 0.2], [0.5, 0.8], [0.25, 0.5], [0.75, 0.5]];
-            for (const [fx, fy] of points) {
-                for (const e of document.elementsFromPoint(r.left + r.width * fx, r.top + r.height * fy)) {
-                    if (e === host) break;
-                    if (!host.contains(e) || e.dataset.jgCleared) continue;
-                    const er = e.getBoundingClientRect();
-                    if (er.width < r.width * 0.6 || er.height < r.height * 0.6) continue;
-                    const cs = getComputedStyle(e);
-                    const solid = cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "transparent";
-                    if (!solid && cs.backgroundImage === "none") continue;
-                    e.dataset.jgCleared = "1";
-                    const saved = ["background-color", "background-image"].map(prop =>
-                        [prop, e.style.getPropertyValue(prop), e.style.getPropertyPriority(prop)]);
-                    e.style.setProperty("background-color", "transparent", "important");
-                    e.style.setProperty("background-image", "none", "important");
-                    this.restored.push(() => {
-                        for (const [prop, value, priority] of saved) {
-                            if (value) e.style.setProperty(prop, value, priority);
-                            else e.style.removeProperty(prop);
-                        }
-                        delete e.dataset.jgCleared;
-                    });
-                }
-            }
         }
 
         count() {
@@ -558,6 +522,44 @@
         }
     }
 
+    // ------------------------------------------------------------------
+    // Glass keeper: Spotify paints a solid background on some big layers
+    // inside each panel, which hides the glass and the effects. Find large
+    // layers with a background that cover a panel and make them see-through.
+    // Runs all the time (not only while an effect is on).
+    // ------------------------------------------------------------------
+
+    function findPanels() {
+        const found = Array.from(document.querySelectorAll(PANEL_SELECTOR)).filter(el => {
+            const r = el.getBoundingClientRect();
+            return r.width > 120 && r.height > 120;
+        });
+        return found.filter(el => !found.some(o => o !== el && o.contains(el)));
+    }
+
+    function clearCovers(host) {
+        const r = host.getBoundingClientRect();
+        const points = [[0.5, 0.5], [0.5, 0.2], [0.5, 0.8], [0.25, 0.5], [0.75, 0.5]];
+        for (const [fx, fy] of points) {
+            for (const e of document.elementsFromPoint(r.left + r.width * fx, r.top + r.height * fy)) {
+                if (e === host) break;
+                if (!host.contains(e) || e.dataset.jgCleared) continue;
+                const er = e.getBoundingClientRect();
+                if (er.width < r.width * 0.6 || er.height < r.height * 0.6) continue;
+                const cs = getComputedStyle(e);
+                const solid = cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "transparent";
+                if (!solid && cs.backgroundImage === "none") continue;
+                e.dataset.jgCleared = "1";
+                e.style.setProperty("background-color", "transparent", "important");
+                e.style.setProperty("background-image", "none", "important");
+            }
+        }
+    }
+
+    function keepGlass() {
+        for (const host of findPanels()) clearCovers(host);
+    }
+
     const engine = new EffectsEngine(settings);
 
     // ------------------------------------------------------------------
@@ -652,5 +654,7 @@
     new Spicetify.Topbar.Button("Jungle Glass settings", ICON, openSettings);
 
     applyTheme();
+    keepGlass();
+    setInterval(keepGlass, 1000);
     engine.start();
 })();
