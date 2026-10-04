@@ -55,6 +55,8 @@ install-theme.bat            double-click to (re)install the theme
 setup-plugin.bat             double-click to build/update Vencord with the JungleEffects plugin
 plugin/jungleEffects/        the plugin's source code
 settings.css                 paste into QuickCSS to change settings inside Discord
+install-spotify.bat          double-click to install the Spotify (Spicetify) version
+spotify/                     the Spotify theme and extension
 scripts/install-theme.ps1    the script the .bat runs
 theme/JungleGlass.theme.css  the theme
 theme/background.jpg         your background image
@@ -83,3 +85,21 @@ Click the ✦ button at the top of your server list (or the gear next to JungleE
 ### Updating
 
 Double-click **`setup-plugin.bat`** again, then restart Discord.
+
+## Spotify version (Spicetify)
+
+The same look for Spotify: your wallpaper, frosted glass panels, accent colour, font and the animated effects. A ✦ button in Spotify's top bar opens a settings panel (colour picker, sliders, dropdowns); changes apply instantly.
+
+### Install
+
+1. You need [Spicetify](https://spicetify.app) installed already. Spotify should be the version from **spotify.com/download**, not the Microsoft Store one.
+2. Double-click **`install-spotify.bat`**. It copies the theme and extension into Spicetify, applies them (Spotify restarts), and blocks Spotify auto-updates so the theme stops resetting.
+3. Click the **✦** button in Spotify's top bar.
+
+It uses the same wallpaper as the Discord theme (`theme/background.jpg`). After changing it, run `install-spotify.bat` again.
+
+### If Spotify ever goes back to normal
+
+Run `spicetify backup apply` in PowerShell (or `spicetify restore backup apply` if that complains), or just run `install-spotify.bat` again.
+
+To go back to your previous Spicetify theme: `spicetify config current_theme <name>` then `spicetify apply`. The installer prints your previous theme's name.
