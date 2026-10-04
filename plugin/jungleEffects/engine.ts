@@ -240,10 +240,14 @@ export class EffectsEngine {
         };
         switch (this.opts.effect) {
             case "rain":
-                p.vy = rand(900, 1150) + 900 * d;
-                p.s = 12 + 34 * d + rand(-3, 3);
+                // near drops fall faster and look longer (motion blur), like real rain
+                p.vy = rand(1100, 1300) + 900 * d;
+                p.s = p.vy * rand(0.014, 0.019);
                 p.a = 0.12 + 0.45 * d;
-                if (!initial) p.y = -rand(20, 200);
+                p.amp = rand(-0.012, 0.012); // tiny per-drop angle difference
+                // spawn across the top, plus a strip up-wind so the left edge isn't empty
+                p.x = rand(-0.2 * H, W);
+                if (!initial) p.y = -rand(0, 0.15 * H) - p.s;
                 break;
             case "snow":
                 p.vy = rand(25, 45) + 75 * d;
@@ -283,6 +287,12 @@ export class EffectsEngine {
         return p;
     }
 
+    // Rain angle (as a slope): every drop shares it, and it drifts slowly
+    // between about 1 and 10 degrees, always leaning the same way.
+    private rainSlant(t: number) {
+        return 0.1 + 0.05 * Math.sin(t * 0.05) + 0.03 * Math.sin(t * 0.13 + 1);
+    }
+
     // smooth gusts: a few slow waves added together
     private wind(t: number) {
         return 0.22 + 0.32 * Math.sin(t * 0.13) + 0.2 * Math.sin(t * 0.31 + 1.7) + 0.12 * Math.sin(t * 0.71 + 0.4);
@@ -293,16 +303,17 @@ export class EffectsEngine {
         const sp = this.opts.speed;
         const t = this.t;
         const wind = this.wind(t);
+        const slant = this.rainSlant(t);
         const ps = this.particles;
 
         for (let i = 0; i < ps.length; i++) {
             let p = ps[i];
             switch (this.opts.effect) {
                 case "rain": {
-                    p.vx = wind * (220 + 260 * p.d);
+                    p.vx = p.vy * (slant + p.amp);
                     p.x += p.vx * dt * sp;
                     p.y += p.vy * dt * sp;
-                    if (p.y - p.s * this.opts.size > H || p.x < -0.2 * W || p.x > 1.2 * W) p = ps[i] = this.spawn(false);
+                    if (p.y - p.s * this.opts.size > H) p = ps[i] = this.spawn(false);
                     break;
                 }
                 case "snow": {

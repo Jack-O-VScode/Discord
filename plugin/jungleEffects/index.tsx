@@ -163,7 +163,7 @@ export default definePlugin({
 
     start() {
         // The plugin replaces the theme's CSS-only effects, so switch those off
-        document.documentElement.style.setProperty("--jg-effect", "none");
+        document.documentElement.style.setProperty("--jg-effect", "none", "important");
         engine = new EffectsEngine(currentOptions());
         engine.start();
         if (settings.store.showButton) addButton();
