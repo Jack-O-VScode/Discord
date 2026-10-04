@@ -532,18 +532,49 @@
     // Newer Spotify versions give the panels scrambled class names, so find
     // them by layout instead: the boxes directly inside .Root__top-container.
     // They get a data-jg-panel attribute, which the theme's CSS styles.
+    function overlapArea(a, b) {
+        const w = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+        const h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+        return w > 0 && h > 0 ? w * h : 0;
+    }
+
     function tagPanels() {
         const top = document.querySelector(".Root__top-container");
         if (!top) return [];
         const tr = top.getBoundingClientRect();
+        const kids = Array.from(top.children).filter(el => !el.matches(".Root__globalNav, .Root__lyrics-cinema, script, style, canvas"));
+        const rects = new Map(kids.map(el => [el, el.getBoundingClientRect()]));
         const panels = [];
-        for (const el of top.children) {
-            if (el.matches(".Root__globalNav, .Root__lyrics-cinema, script, style, canvas")) continue;
-            const r = el.getBoundingClientRect();
-            if (r.width < 120 || r.height < 40) continue;
-            if (r.width > tr.width * 0.95 && r.height > tr.height * 0.9) continue; // full-window overlays
-            if (!el.hasAttribute("data-jg-panel")) el.setAttribute("data-jg-panel", "");
-            panels.push(el);
+        for (const el of kids) {
+            const r = rects.get(el);
+            let ok = r.width >= 120 && r.height >= 40;
+            if (ok && r.width > tr.width * 0.95 && r.height > tr.height * 0.9) ok = false; // full-window layers
+            if (ok) {
+                // floating layers (overlays, drag-and-drop areas) are positioned on top
+                const pos = getComputedStyle(el).position;
+                if (pos === "absolute" || pos === "fixed") ok = false;
+            }
+            if (ok) {
+                // a real panel sits beside the others; an overlay is the bigger
+                // layer that covers another one
+                const area = r.width * r.height;
+                for (const other of kids) {
+                    if (other === el) continue;
+                    const o = rects.get(other);
+                    const oArea = o.width * o.height;
+                    if (o.width < 40 || o.height < 40 || oArea > area) continue;
+                    if (overlapArea(r, o) > oArea * 0.3) {
+                        ok = false;
+                        break;
+                    }
+                }
+            }
+            if (ok) {
+                if (!el.hasAttribute("data-jg-panel")) el.setAttribute("data-jg-panel", "");
+                panels.push(el);
+            } else if (el.hasAttribute("data-jg-panel")) {
+                el.removeAttribute("data-jg-panel");
+            }
         }
         return panels;
     }
