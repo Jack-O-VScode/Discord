@@ -529,12 +529,33 @@
     // Runs all the time (not only while an effect is on).
     // ------------------------------------------------------------------
 
-    function findPanels() {
-        const found = Array.from(document.querySelectorAll(PANEL_SELECTOR)).filter(el => {
+    // Newer Spotify versions give the panels scrambled class names, so find
+    // them by layout instead: the boxes directly inside .Root__top-container.
+    // They get a data-jg-panel attribute, which the theme's CSS styles.
+    function tagPanels() {
+        const top = document.querySelector(".Root__top-container");
+        if (!top) return [];
+        const tr = top.getBoundingClientRect();
+        const panels = [];
+        for (const el of top.children) {
+            if (el.matches(".Root__globalNav, .Root__lyrics-cinema, script, style, canvas")) continue;
             const r = el.getBoundingClientRect();
-            return r.width > 120 && r.height > 120;
+            if (r.width < 120 || r.height < 40) continue;
+            if (r.width > tr.width * 0.95 && r.height > tr.height * 0.9) continue; // full-window overlays
+            if (!el.hasAttribute("data-jg-panel")) el.setAttribute("data-jg-panel", "");
+            panels.push(el);
+        }
+        return panels;
+    }
+
+    // Panels the effect is drawn in (tall ones only, not the player bar)
+    function findPanels() {
+        const found = [...tagPanels(), ...document.querySelectorAll(PANEL_SELECTOR)].filter(el => {
+            const r = el.getBoundingClientRect();
+            return r.width > 120 && r.height > 200;
         });
-        return found.filter(el => !found.some(o => o !== el && o.contains(el)));
+        const unique = [...new Set(found)];
+        return unique.filter(el => !unique.some(o => o !== el && o.contains(el)));
     }
 
     function clearCovers(host) {
@@ -571,11 +592,12 @@
     }
 
     function keepGlass() {
-        for (const host of findPanels()) {
+        const hosts = new Set([...findPanels(), ...tagPanels()]);
+        for (const host of hosts) {
             clearWrappers(host);
             clearCovers(host);
         }
-        for (const el of document.querySelectorAll(".Root__now-playing-bar, .Root__globalNav")) clearWrappers(el);
+        for (const el of document.querySelectorAll(".Root__now-playing-bar, .Root__globalNav, [data-jg-panel]")) clearWrappers(el);
     }
 
     const engine = new EffectsEngine(settings);

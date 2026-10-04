@@ -111,7 +111,10 @@ body {
         var(--jg-image) center / cover no-repeat !important;
 }
 
-/* ---- Frosted glass panels ---- */
+/* ---- Frosted glass panels ----
+   [data-jg-panel] is added by the extension to the panels in newer Spotify
+   versions, whose class names are scrambled. */
+[data-jg-panel],
 .Root__nav-bar,
 .Root__main-view,
 .Root__right-sidebar,
@@ -121,7 +124,8 @@ body {
     border-radius: 8px;
 }
 
-/* inner wrappers that would otherwise paint a solid colour over the glass */
+/* inner wrappers that would otherwise paint a solid colour over the glass
+   (for panels with scrambled names, the extension clears big inner layers) */
 .Root__nav-bar > *,
 .Root__main-view > *,
 .Root__right-sidebar > *,
