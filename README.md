@@ -52,8 +52,34 @@ Your QuickCSS is saved by Vencord, so it stays even when you reinstall or update
 
 ```
 install-theme.bat            double-click to (re)install the theme
+setup-plugin.bat             double-click to build/update Vencord with the JungleEffects plugin
+plugin/jungleEffects/        the plugin's source code
 settings.css                 paste into QuickCSS to change settings inside Discord
 scripts/install-theme.ps1    the script the .bat runs
 theme/JungleGlass.theme.css  the theme
 theme/background.jpg         your background image
 ```
+
+## JungleEffects plugin (optional)
+
+A small personal Vencord plugin that replaces the theme's CSS effects with a real particle system: every raindrop, snowflake, leaf, star and firefly gets its own random speed, size, path and spawn point. Settings use sliders inside Discord, and an effects button sits at the top of your server list.
+
+It needs Vencord built from source, because custom plugins can't be added to the normal Vencord install.
+
+### Setup (first time)
+
+1. Install **Git**: <https://git-scm.com/download/win> (default options are fine).
+2. Install **Node.js LTS**: <https://nodejs.org>.
+3. Double-click **`setup-plugin.bat`**. It downloads Vencord to `%USERPROFILE%\Vencord`, adds the plugin, builds everything and installs it into Discord. When the Vencord installer asks, pick your normal Discord.
+4. Fully quit Discord (system tray > Quit Discord) and reopen it.
+5. **User Settings > Vencord > Plugins**, search **JungleEffects**, turn it on.
+
+Your theme, QuickCSS and Vencord settings all carry over.
+
+### Using it
+
+Click the ✦ button at the top of your server list (or the gear next to JungleEffects in the Plugins list) to change the effect, speed, size, amount, opacity, layer and frame-rate limit. While the plugin is on, the theme's own CSS effect is switched off automatically.
+
+### Updating
+
+Double-click **`setup-plugin.bat`** again, then restart Discord.

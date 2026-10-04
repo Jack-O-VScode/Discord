@@ -1,0 +1,20 @@
+.vc-jungle-fx-btn {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--interactive-icon-default, #b5bac1);
+    background: var(--background-surface-high, rgb(255 255 255 / 0.06));
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.vc-jungle-fx-btn:hover,
+.vc-jungle-fx-btn:focus-visible {
+    color: #fff;
+    background: var(--brand-500, #5865f2);
+    outline: none;
+}
