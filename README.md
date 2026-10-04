@@ -30,7 +30,7 @@ From then on you open Discord as usual and the theme loads automatically.
 |---|---|
 | `--jg-accent` | Accent colour. Click the little colour square next to it for a colour picker. Hover and link shades follow automatically. |
 | `--jg-mention` | Ping colour: @mentions and the highlight on messages that ping you |
-| `--jg-font` | `"Nunito"`, `"Inter"`, `"Outfit"`, `"Quicksand"` or `"gg sans"` (Discord's default) |
+| `--jg-font` | `"Nunito"`, `"Inter"`, `"Outfit"`, `"Quicksand"`, `"Courier New"` or `"gg sans"` (Discord's default). Any font installed on your PC also works. |
 | `--jg-panel-opacity` | Glass panels: `0` = fully see-through, `1` = solid |
 | `--jg-blur` | Blur behind panels: `0px` = none, `30px` = very blurry |
 | `--jg-popup-opacity` | Menus, popouts and dialogs: `0` = see-through, `1` = solid |

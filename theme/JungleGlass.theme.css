@@ -19,7 +19,7 @@
     /* Ping colour (@mentions, and the highlight on messages that ping you) */
     --jg-mention: #f5c542;
 
-    /* Font: "Nunito", "Inter", "Outfit", "Quicksand" or "gg sans" (Discord's default) */
+    /* Font: "Nunito", "Inter", "Outfit", "Quicksand", "Courier New" or "gg sans" (Discord's default) */
     --jg-font: "Nunito";
 
     /* Frosted glass */
