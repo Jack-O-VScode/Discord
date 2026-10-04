@@ -258,15 +258,6 @@ body {
     to   { opacity: var(--jg-effect-opacity); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    #app-mount::before,
-    #app-mount::after,
-    [class^="sidebar_"]::after,
-    [class^="page_"]::after {
-        animation: none;
-    }
-}
-
 @container style(--jg-effect: snow) {
     #app-mount {
         --jg-fx-on: block;
