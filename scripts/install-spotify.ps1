@@ -21,6 +21,15 @@ if (-not (Get-Command spicetify -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
+# The Microsoft Store version updates itself through the Store, so blocking
+# updates (and so keeping the theme) can't work reliably with it.
+if (Get-AppxPackage -Name '*Spotify*' -ErrorAction SilentlyContinue) {
+    Write-Host ''
+    Write-Host 'Heads up: you have the Microsoft Store version of Spotify.' -ForegroundColor Yellow
+    Write-Host 'The Store updates it by itself, which removes the theme. For the theme to stick,' -ForegroundColor Yellow
+    Write-Host 'uninstall it and install Spotify from https://www.spotify.com/download instead.' -ForegroundColor Yellow
+}
+
 # Find Spicetify's folder (normally %APPDATA%\spicetify)
 $spiceDir = $null
 try {
@@ -85,3 +94,4 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host ""
 Write-Host 'Done! Click the sparkle button in Spotify''s top bar to change the look and effects.' -ForegroundColor Green
+Write-Host 'If a Spotify update ever removes the theme, double-click fix-spotify.bat.'

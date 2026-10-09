@@ -56,6 +56,7 @@ setup-plugin.bat             double-click to build/update Vencord with the Jungl
 plugin/jungleEffects/        the plugin's source code
 settings.css                 paste into QuickCSS to change settings inside Discord
 install-spotify.bat          double-click to install the Spotify (Spicetify) version
+fix-spotify.bat              double-click if a Spotify update removed the theme
 spotify/                     the Spotify theme and extension
 scripts/install-theme.ps1    the script the .bat runs
 theme/JungleGlass.theme.css  the theme
@@ -100,6 +101,8 @@ It uses the same wallpaper as the Discord theme (`theme/background.jpg`). After 
 
 ### If Spotify ever goes back to normal
 
-Run `spicetify backup apply` in PowerShell (or `spicetify restore backup apply` if that complains), or just run `install-spotify.bat` again.
+Double-click **`fix-spotify.bat`**. It checks whether the theme is still in Spotify and, if an update removed it, re-applies it and blocks updates again. (It writes a log to `%LOCALAPPDATA%\JungleGlass\spotify-autofix.log`.) Running `install-spotify.bat` again also works.
+
+If it keeps happening, check you're not using the Microsoft Store version of Spotify; the installer warns you if you are.
 
 To go back to your previous Spicetify theme: `spicetify config current_theme <name>` then `spicetify apply`. The installer prints your previous theme's name.
