@@ -81,9 +81,15 @@ if ($LASTEXITCODE -ne 0) { throw 'spicetify config extensions failed' }
 Step 'Applying (Spotify will restart)'
 & spicetify apply
 if ($LASTEXITCODE -ne 0) {
-    Write-Host 'Apply failed - trying a fresh backup first (this happens after a Spotify update).' -ForegroundColor Yellow
-    & spicetify restore backup apply
-    if ($LASTEXITCODE -ne 0) { throw 'spicetify apply failed' }
+    # After a Spotify update the old backup no longer matches; Spicetify's own
+    # advice is "spicetify backup apply", which backs up the new version first.
+    Write-Host 'Apply failed - making a fresh backup of the updated Spotify first.' -ForegroundColor Yellow
+    & spicetify backup apply
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host 'Still failing - trying restore backup apply.' -ForegroundColor Yellow
+        & spicetify restore backup apply
+        if ($LASTEXITCODE -ne 0) { throw 'spicetify apply failed' }
+    }
 }
 
 Step 'Blocking Spotify auto-updates (so the theme stops resetting)'
