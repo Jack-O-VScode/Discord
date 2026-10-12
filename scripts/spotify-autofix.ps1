@@ -51,11 +51,21 @@ if (Test-Path $marker) {
 
 Log 'Theme is missing (Spotify probably updated). Re-applying...'
 
-# -q answers Spicetify's yes/no questions automatically, so this can run hidden
-& $spicetify -q backup apply
+# Close Spotify first: blocking updates patches Spotify.exe, which is locked
+# while Spotify runs. Applying the theme starts Spotify again afterwards.
+Get-Process -Name Spotify -ErrorAction SilentlyContinue | Stop-Process -Force
+Start-Sleep -Seconds 2
+
+& $spicetify -q spotify-updates block
+if ($LASTEXITCODE -eq 0) { Log 'Spotify updates blocked again.' } else { Log 'Could not block Spotify updates.' }
+
+# -q answers Spicetify's yes/no questions automatically.
+# After an update, "restore backup apply" restores, re-backs-up the new
+# version and applies the theme.
+& $spicetify -q restore backup apply
 if ($LASTEXITCODE -ne 0) {
-    Log 'backup apply failed - trying restore backup apply.'
-    & $spicetify -q restore backup apply
+    Log 'restore backup apply failed - trying backup apply.'
+    & $spicetify -q backup apply
 }
 
 if (Test-Path $marker) {
@@ -63,6 +73,3 @@ if (Test-Path $marker) {
 } else {
     Log 'Could not re-apply automatically. Run install-spotify.bat by hand.'
 }
-
-& $spicetify -q spotify-updates block
-if ($LASTEXITCODE -eq 0) { Log 'Spotify updates blocked again.' } else { Log 'Could not block Spotify updates.' }

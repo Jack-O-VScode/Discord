@@ -78,24 +78,28 @@ if ($LASTEXITCODE -ne 0) { throw 'spicetify config failed' }
 & spicetify config extensions jungleGlass.js
 if ($LASTEXITCODE -ne 0) { throw 'spicetify config extensions failed' }
 
-Step 'Applying (Spotify will restart)'
-& spicetify apply
-if ($LASTEXITCODE -ne 0) {
-    # After a Spotify update the old backup no longer matches; Spicetify's own
-    # advice is "spicetify backup apply", which backs up the new version first.
-    Write-Host 'Apply failed - making a fresh backup of the updated Spotify first.' -ForegroundColor Yellow
-    & spicetify backup apply
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host 'Still failing - trying restore backup apply.' -ForegroundColor Yellow
-        & spicetify restore backup apply
-        if ($LASTEXITCODE -ne 0) { throw 'spicetify apply failed' }
-    }
-}
-
-Step 'Blocking Spotify auto-updates (so the theme stops resetting)'
+# Spotify must be closed first: blocking updates patches Spotify.exe, which
+# is locked while Spotify runs (and applying restarts Spotify anyway).
+Step 'Closing Spotify and blocking its auto-updates (so the theme stops resetting)'
+Get-Process -Name Spotify -ErrorAction SilentlyContinue | Stop-Process -Force
+Start-Sleep -Seconds 2
 & spicetify spotify-updates block
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Couldn't block updates. Run 'spicetify upgrade' and then install-spotify.bat again." -ForegroundColor Yellow
+}
+
+Step 'Applying (Spotify will restart)'
+& spicetify apply
+if ($LASTEXITCODE -ne 0) {
+    # After a Spotify update the old backup no longer matches the new files.
+    # "restore backup apply" restores, re-backs-up the new version and applies.
+    Write-Host 'Apply failed (Spotify probably updated) - redoing the backup and applying.' -ForegroundColor Yellow
+    & spicetify restore backup apply
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host 'Still failing - trying backup apply.' -ForegroundColor Yellow
+        & spicetify backup apply
+        if ($LASTEXITCODE -ne 0) { throw 'spicetify apply failed' }
+    }
 }
 
 Write-Host ""
