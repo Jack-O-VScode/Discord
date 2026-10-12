@@ -94,14 +94,16 @@ The same look for Spotify: your wallpaper, frosted glass panels, accent colour, 
 ### Install
 
 1. You need [Spicetify](https://spicetify.app) installed already. Spotify should be the version from **spotify.com/download**, not the Microsoft Store one.
-2. Double-click **`install-spotify.bat`**. It copies the theme and extension into Spicetify, applies them (Spotify restarts), and blocks Spotify auto-updates so the theme stops resetting.
+2. Double-click **`install-spotify.bat`**. It copies the theme and extension into Spicetify and applies them (Spotify restarts).
 3. Click the **✦** button in Spotify's top bar.
 
 It uses the same wallpaper as the Discord theme (`theme/background.jpg`). After changing it, run `install-spotify.bat` again.
 
-### If Spotify ever goes back to normal
+### When Spotify updates (and the theme disappears)
 
-Double-click **`fix-spotify.bat`**. It checks whether the theme is still in Spotify and, if an update removed it, re-applies it and blocks updates again. (It writes a log to `%LOCALAPPDATA%\JungleGlass\spotify-autofix.log`.) Running `install-spotify.bat` again also works.
+Spotify updates itself every so often, and each update removes the theme. Spicetify's `spotify-updates block` command no longer works on Spotify 1.2.70 and newer ([spicetify/cli#3490](https://github.com/spicetify/cli/issues/3490)), so updates can't be stopped.
+
+When it happens, double-click **`fix-spotify.bat`**. It checks whether the theme is still in Spotify and, if an update removed it, closes Spotify and re-applies it (`spicetify restore backup apply`). It writes a log to `%LOCALAPPDATA%\JungleGlass\spotify-autofix.log`. Running `install-spotify.bat` again also works, or by hand: quit Spotify, then `spicetify restore backup apply`.
 
 If it keeps happening, check you're not using the Microsoft Store version of Spotify; the installer warns you if you are.
 

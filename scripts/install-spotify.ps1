@@ -1,5 +1,7 @@
-# Installs the Jungle Glass theme + extension into Spicetify, applies it,
-# and blocks Spotify auto-updates (which is what keeps resetting the theme).
+# Installs the Jungle Glass theme + extension into Spicetify and applies it.
+# It also tries to block Spotify auto-updates, but Spicetify can't do that on
+# Spotify 1.2.70 and newer (spicetify/cli issue #3490). After an update
+# removes the theme, run fix-spotify.bat.
 # Run it via install-spotify.bat (double-click). Re-run it after changing
 # theme\background.jpg.
 
@@ -80,12 +82,13 @@ if ($LASTEXITCODE -ne 0) { throw 'spicetify config extensions failed' }
 
 # Spotify must be closed first: blocking updates patches Spotify.exe, which
 # is locked while Spotify runs (and applying restarts Spotify anyway).
-Step 'Closing Spotify and blocking its auto-updates (so the theme stops resetting)'
+Step 'Closing Spotify and trying to block its auto-updates'
 Get-Process -Name Spotify -ErrorAction SilentlyContinue | Stop-Process -Force
 Start-Sleep -Seconds 2
 & spicetify spotify-updates block
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Couldn't block updates. Run 'spicetify upgrade' and then install-spotify.bat again." -ForegroundColor Yellow
+    Write-Host "Spicetify can't block updates on this Spotify version (known Spicetify limitation)." -ForegroundColor Yellow
+    Write-Host 'Spotify will keep updating; when an update removes the theme, double-click fix-spotify.bat.' -ForegroundColor Yellow
 }
 
 Step 'Applying (Spotify will restart)'

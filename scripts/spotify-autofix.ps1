@@ -57,7 +57,7 @@ Get-Process -Name Spotify -ErrorAction SilentlyContinue | Stop-Process -Force
 Start-Sleep -Seconds 2
 
 & $spicetify -q spotify-updates block
-if ($LASTEXITCODE -eq 0) { Log 'Spotify updates blocked again.' } else { Log 'Could not block Spotify updates.' }
+if ($LASTEXITCODE -eq 0) { Log 'Spotify updates blocked.' } else { Log 'Could not block Spotify updates (Spicetify cannot on Spotify 1.2.70+; that is expected).' }
 
 # -q answers Spicetify's yes/no questions automatically.
 # After an update, "restore backup apply" restores, re-backs-up the new
